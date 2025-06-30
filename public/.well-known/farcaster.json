@@ -7,11 +7,11 @@
   "frame": {
     "version": "1",
     "name": "Word Guessing Game",
-    "iconUrl": "https://what-the-gger.vercel.app/images/images/gger.png",
+    "iconUrl": "https://what-the-gger.vercel.app/images/images/ggger.png",
     "homeUrl": "https://what-the-gger.vercel.app",
-    "imageUrl": "https://what-the-gger.vercel.app/images/images/gger.png",
+    "imageUrl": "https://what-the-gger.vercel.app/images/images/ggger.png",
     "buttonTitle": "Play Word Game",
-    "splashImageUrl": "https://what-the-gger.vercel.app/images/images/gger.png",
+    "splashImageUrl": "https://what-the-gger.vercel.app/images/images/ggger.png",
     "splashBackgroundColor": "#F2B149"
   }
 }
