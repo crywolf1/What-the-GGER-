@@ -40,6 +40,44 @@
   font-weight: bold;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.refresh-button {
+  background: rgba(242, 177, 73, 0.1);
+  border: 1px solid rgba(242, 177, 73, 0.3);
+  border-radius: 6px;
+  color: #F2B149;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: rgba(242, 177, 73, 0.2);
+  border-color: #F2B149;
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refresh-button .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .close-button {
   background: none;
   border: none;

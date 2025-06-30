@@ -1,15 +1,17 @@
 import React from 'react';
-import { Trophy, Medal, Award, User } from 'lucide-react';
+import { Trophy, Medal, Award, User, RefreshCw } from 'lucide-react';
 import type { LeaderboardEntry } from '../types/game';
 import './Leaderboard.css';
 
 interface LeaderboardProps {
   leaderboard: LeaderboardEntry[];
   currentUserFid?: number;
+  isLoading?: boolean;
   onClose: () => void;
+  onRefresh?: () => void;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ leaderboard, currentUserFid, onClose }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ leaderboard, currentUserFid, isLoading, onClose, onRefresh }) => {
   console.log('Leaderboard component rendered with:', { leaderboard, currentUserFid });
   
   const getRankIcon = (rank: number) => {
@@ -41,7 +43,19 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ leaderboard, currentUserFid, 
       <div className="leaderboard-modal">
         <div className="leaderboard-header">
           <h2>🏆 what the gger Leaderboard</h2>
-          <button onClick={onClose} className="close-button">×</button>
+          <div className="header-actions">
+            {onRefresh && (
+              <button 
+                onClick={onRefresh} 
+                className="refresh-button"
+                disabled={isLoading}
+                title="Refresh Leaderboard"
+              >
+                <RefreshCw size={18} className={isLoading ? 'spinning' : ''} />
+              </button>
+            )}
+            <button onClick={onClose} className="close-button">×</button>
+          </div>
         </div>
         
         <div className="leaderboard-content">

@@ -23,7 +23,7 @@ const WordGame: React.FC = () => {
   } = useWordGame();
 
   const { isFrameContext, user } = useFarcasterFrame();
-  const { leaderboard, addScore, getUserRank, getUserScore, clearLeaderboard } = useLeaderboard();
+  const { leaderboard, isLoading, addScore, getUserRank, getUserScore, clearLeaderboard, refreshLeaderboard } = useLeaderboard();
   
   const [showAddMiniApp, setShowAddMiniApp] = useState(false);
   const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(() => {
@@ -42,6 +42,7 @@ const WordGame: React.FC = () => {
   });
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
+  const [userRank, setUserRank] = useState<number>(-1);
 
   // Clear any test data on app startup
   useEffect(() => {
@@ -161,17 +162,38 @@ const WordGame: React.FC = () => {
     if (isGameComplete && user && !scoreSubmitted) {
       const correctCount = results.filter(r => r.isCorrect).length;
       console.log('Submitting score:', { correctCount, totalWords: results.length, user });
-      addScore({
-        fid: user.fid,
-        username: user.username,
-        displayName: user.displayName,
-        pfpUrl: user.pfpUrl,
-        score: correctCount,
-        totalWords: results.length,
-      });
-      setScoreSubmitted(true);
+      
+      const submitScore = async () => {
+        try {
+          await addScore({
+            fid: user.fid,
+            username: user.username,
+            displayName: user.displayName,
+            pfpUrl: user.pfpUrl,
+            score: correctCount,
+            totalWords: results.length,
+          });
+          setScoreSubmitted(true);
+        } catch (error) {
+          console.error('Error submitting score:', error);
+          setScoreSubmitted(true); // Still mark as submitted to prevent retry
+        }
+      };
+      
+      submitScore();
     }
   }, [isGameComplete, user, scoreSubmitted, results, addScore]);
+
+  // Update user rank when game completes
+  useEffect(() => {
+    if (isGameComplete && user) {
+      getUserRank(user.fid).then(rank => {
+        setUserRank(rank);
+      }).catch(error => {
+        console.error('Error fetching user rank:', error);
+      });
+    }
+  }, [isGameComplete, user, getUserRank, leaderboard]);
 
   const shareScore = async () => {
     const correctCount = results.filter((r) => r.isCorrect).length;
@@ -284,12 +306,11 @@ const WordGame: React.FC = () => {
             {user && (
               <div className="user-rank">
                 {(() => {
-                  const rank = getUserRank(user.fid);
                   const userScore = getUserScore(user.fid);
-                  if (rank > 0 && userScore) {
+                  if (userRank > 0 && userScore) {
                     return (
                       <p className="rank-text">
-                        🎯 Your Rank: #{rank} • Best: {userScore.score}/{userScore.totalWords} ({userScore.percentage}%)
+                        🎯 Your Rank: #{userRank} • Best: {userScore.score}/{userScore.totalWords} ({userScore.percentage}%)
                       </p>
                     );
                   }
@@ -369,7 +390,9 @@ const WordGame: React.FC = () => {
         <Leaderboard
           leaderboard={leaderboard}
           currentUserFid={user?.fid}
+          isLoading={isLoading}
           onClose={() => setShowLeaderboard(false)}
+          onRefresh={refreshLeaderboard}
         />
       )}
 

@@ -1,82 +1,134 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { LeaderboardEntry } from '../types/game';
 
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-api-domain.com' // Replace with your deployed API URL
+  : 'http://localhost:3001';
+
 export const useLeaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load leaderboard from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('whatTheGgerLeaderboard');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setLeaderboard(parsed);
-      } catch (error) {
-        console.error('Error loading leaderboard:', error);
+  // Load leaderboard from API
+  const loadLeaderboard = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/leaderboard`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch leaderboard');
       }
+      
+      const data = await response.json();
+      setLeaderboard(data);
+    } catch (err) {
+      console.error('Error loading leaderboard:', err);
+      setError('Failed to load leaderboard');
+      // Fallback to localStorage for offline mode
+      const saved = localStorage.getItem('whatTheGgerLeaderboard');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setLeaderboard(parsed);
+        } catch (parseError) {
+          console.error('Error parsing local leaderboard:', parseError);
+        }
+      }
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
-  // Save leaderboard to localStorage
-  const saveLeaderboard = useCallback((newLeaderboard: LeaderboardEntry[]) => {
-    localStorage.setItem('whatTheGgerLeaderboard', JSON.stringify(newLeaderboard));
-    setLeaderboard(newLeaderboard);
-  }, []);
+  // Load leaderboard on mount
+  useEffect(() => {
+    loadLeaderboard();
+  }, [loadLeaderboard]);
 
   // Add or update a score
-  const addScore = useCallback((entry: Omit<LeaderboardEntry, 'percentage' | 'timestamp'>) => {
-    console.log('Adding score to leaderboard:', entry);
+  const addScore = useCallback(async (entry: Omit<LeaderboardEntry, 'percentage' | 'timestamp'>) => {
+    console.log('Submitting score to API:', entry);
     setIsLoading(true);
+    setError(null);
     
-    const percentage = Math.round((entry.score / entry.totalWords) * 100);
-    const newEntry: LeaderboardEntry = {
-      ...entry,
-      percentage,
-      timestamp: Date.now(),
-    };
-
-    setLeaderboard(currentLeaderboard => {
-      // Find existing entry for this user
-      const existingIndex = currentLeaderboard.findIndex(item => item.fid === entry.fid);
-      
-      let updatedLeaderboard: LeaderboardEntry[];
-      
-      if (existingIndex >= 0) {
-        // Update existing entry if new score is better
-        const existing = currentLeaderboard[existingIndex];
-        if (newEntry.percentage > existing.percentage || 
-           (newEntry.percentage === existing.percentage && newEntry.score > existing.score)) {
-          updatedLeaderboard = [...currentLeaderboard];
-          updatedLeaderboard[existingIndex] = newEntry;
-        } else {
-          // Keep existing better score
-          setIsLoading(false);
-          return currentLeaderboard;
-        }
-      } else {
-        // Add new entry
-        updatedLeaderboard = [...currentLeaderboard, newEntry];
-      }
-
-      // Sort by percentage desc, then by score desc, then by timestamp asc (earlier = better)
-      updatedLeaderboard.sort((a, b) => {
-        if (b.percentage !== a.percentage) return b.percentage - a.percentage;
-        if (b.score !== a.score) return b.score - a.score;
-        return a.timestamp - b.timestamp;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/leaderboard/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(entry),
       });
-
-      // Keep only top 50 entries
-      updatedLeaderboard = updatedLeaderboard.slice(0, 50);
-
-      saveLeaderboard(updatedLeaderboard);
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit score');
+      }
+      
+      const result = await response.json();
+      console.log('Score submission result:', result);
+      
+      // Refresh leaderboard after submission
+      await loadLeaderboard();
+      
+      return result;
+    } catch (err) {
+      console.error('Error submitting score:', err);
+      setError('Failed to submit score');
+      
+      // Fallback to localStorage
+      const percentage = Math.round((entry.score / entry.totalWords) * 100);
+      const newEntry: LeaderboardEntry = {
+        ...entry,
+        percentage,
+        timestamp: Date.now(),
+      };
+      
+      setLeaderboard(currentLeaderboard => {
+        const existingIndex = currentLeaderboard.findIndex(item => item.fid === entry.fid);
+        let updatedLeaderboard: LeaderboardEntry[];
+        
+        if (existingIndex >= 0) {
+          const existing = currentLeaderboard[existingIndex];
+          if (newEntry.percentage > existing.percentage || 
+             (newEntry.percentage === existing.percentage && newEntry.score > existing.score)) {
+            updatedLeaderboard = [...currentLeaderboard];
+            updatedLeaderboard[existingIndex] = newEntry;
+          } else {
+            return currentLeaderboard;
+          }
+        } else {
+          updatedLeaderboard = [...currentLeaderboard, newEntry];
+        }
+        
+        updatedLeaderboard.sort((a, b) => {
+          if (b.percentage !== a.percentage) return b.percentage - a.percentage;
+          if (b.score !== a.score) return b.score - a.score;
+          return a.timestamp - b.timestamp;
+        });
+        
+        updatedLeaderboard = updatedLeaderboard.slice(0, 50);
+        localStorage.setItem('whatTheGgerLeaderboard', JSON.stringify(updatedLeaderboard));
+        return updatedLeaderboard;
+      });
+    } finally {
       setIsLoading(false);
-      return updatedLeaderboard;
-    });
-  }, [saveLeaderboard]);
+    }
+  }, [loadLeaderboard]);
 
   // Get user's rank
-  const getUserRank = useCallback((fid: number): number => {
+  const getUserRank = useCallback(async (fid: number): Promise<number> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/leaderboard/user/${fid}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.rank;
+      }
+    } catch (err) {
+      console.error('Error fetching user rank:', err);
+    }
+    
+    // Fallback to local calculation
     const index = leaderboard.findIndex(entry => entry.fid === fid);
     return index >= 0 ? index + 1 : -1;
   }, [leaderboard]);
@@ -86,18 +138,25 @@ export const useLeaderboard = () => {
     return leaderboard.find(entry => entry.fid === fid) || null;
   }, [leaderboard]);
 
-  // Clear all leaderboard data
+  // Clear all leaderboard data (for testing)
   const clearLeaderboard = useCallback(() => {
     localStorage.removeItem('whatTheGgerLeaderboard');
     setLeaderboard([]);
   }, []);
 
+  // Refresh leaderboard manually
+  const refreshLeaderboard = useCallback(() => {
+    loadLeaderboard();
+  }, [loadLeaderboard]);
+
   return {
     leaderboard,
     isLoading,
+    error,
     addScore,
     getUserRank,
     getUserScore,
     clearLeaderboard,
+    refreshLeaderboard,
   };
 };
