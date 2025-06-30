@@ -4,27 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Word Guessing Game - Farcaster Mini App</title>
+    <title>what the gger - Farcaster Mini App</title>
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Word Guessing Game" />
+    <meta property="og:title" content="what the gger" />
     <meta property="og:description" content="Guess the 6-letter word from the image clues! Fun word puzzle game." />
-    <meta property="og:image" content="https://what-the-gger.vercel.app/images/burger.jpg" />
+    <meta property="og:image" content="https://what-the-gger.vercel.app/images/ggger.png" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://what-the-gger.vercel.app/" />
     
-    <!-- Farcaster Frame Metadata -->
-    <meta property="fc:frame" content="vNext" />
-    <meta property="fc:frame:image" content="https://what-the-gger.vercel.app/images/burger.jpg" />
-    <meta property="fc:frame:image:aspect_ratio" content="1.91:1" />
-    <meta property="fc:frame:button:1" content="Play Word Game" />
-    <meta property="fc:frame:button:1:action" content="post" />
-    <meta property="fc:frame:post_url" content="https://what-the-gger.vercel.app/api/frame" />
-    
-    <!-- Mini App specific metadata -->
-    <meta property="of:version" content="vNext" />
-    <meta property="of:accepts:farcaster" content="vNext" />
-    <meta property="of:image" content="https://what-the-gger.vercel.app/images/burger.jpg" />
+    <!-- Farcaster Frame Metadata - Mini App Format -->
+    <meta
+      name="fc:frame"
+      content='{
+        "version": "next",
+        "imageUrl": "https://what-the-gger.vercel.app/images/ggger.png",
+        "button": {
+          "title": "what the gger",
+          "action": {
+            "type": "launch_frame",
+            "name": "what the gger",
+            "url": "https://what-the-gger.vercel.app/",
+            "splashImageUrl": "https://what-the-gger.vercel.app/images/ggger.png",
+            "splashBackgroundColor": "#F2B149"
+          }
+        }
+      }'
+      data-rh="true"
+    />
   </head>
   <body>
     <div id="root"></div>

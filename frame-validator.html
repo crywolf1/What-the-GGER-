@@ -93,20 +93,35 @@
                 // This would typically make a request to validate the frame
                 // For now, we'll show the expected metadata format
                 const expectedMetadata = {
-                    'fc:frame': 'vNext',
-                    'fc:frame:image': 'https://what-the-gger.vercel.app/images/burger.jpg',
-                    'fc:frame:image:aspect_ratio': '1.91:1',
-                    'fc:frame:button:1': 'Play Word Game',
-                    'fc:frame:button:1:action': 'post',
-                    'fc:frame:post_url': 'https://what-the-gger.vercel.app/api/frame',
-                    'og:title': 'Word Guessing Game',
+                    'name="fc:frame"': 'JSON Mini-App Format',
+                    'og:title': 'what the gger',
                     'og:description': 'Guess the 6-letter word from the image clues! Fun word puzzle game.',
-                    'og:image': 'https://what-the-gger.vercel.app/images/burger.jpg'
+                    'og:image': 'https://what-the-gger.vercel.app/images/ggger.png'
                 };
                 
-                let result = '<h3>✅ Expected Frame Metadata:</h3><pre style="background: #f1f3f4; padding: 10px; border-radius: 4px; overflow-x: auto;">';
+                let result = '<h3>✅ Current Mini-App Format:</h3>';
+                result += '<pre style="background: #f1f3f4; padding: 10px; border-radius: 4px; overflow-x: auto;">';
+                result += `<meta name="fc:frame" content='{\n`;
+                result += `  "version": "next",\n`;
+                result += `  "imageUrl": "https://what-the-gger.vercel.app/images/ggger.png",\n`;
+                result += `  "button": {\n`;
+                result += `    "title": "what the gger",\n`;
+                result += `    "action": {\n`;
+                result += `      "type": "launch_frame",\n`;
+                result += `      "name": "what the gger",\n`;
+                result += `      "url": "https://what-the-gger.vercel.app/",\n`;
+                result += `      "splashImageUrl": "https://what-the-gger.vercel.app/images/ggger.png",\n`;
+                result += `      "splashBackgroundColor": "#F2B149"\n`;
+                result += `    }\n`;
+                result += `  }\n`;
+                result += `}' data-rh="true" />`;
+                result += '</pre>';
+                
+                result += '<h3>📋 Open Graph Tags:</h3><pre style="background: #f1f3f4; padding: 10px; border-radius: 4px; overflow-x: auto;">';
                 for (const [key, value] of Object.entries(expectedMetadata)) {
-                    result += `<meta property="${key}" content="${value}" />\n`;
+                    if (key.startsWith('og:')) {
+                        result += `<meta property="${key}" content="${value}" />\n`;
+                    }
                 }
                 result += '</pre>';
                 
