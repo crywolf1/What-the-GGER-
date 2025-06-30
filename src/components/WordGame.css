@@ -4,7 +4,7 @@
   margin: 0;
   padding: 15px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
   min-height: 100vh;
   color: white;
   display: flex;
@@ -24,6 +24,8 @@
   margin: 0 0 10px 0;
   font-size: clamp(1.5rem, 5vw, 2rem);
   font-weight: bold;
+  color: #F2B149;
+  text-shadow: 0 0 10px rgba(242, 177, 73, 0.3);
 }
 
 .game-header p {
@@ -55,8 +57,9 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, #F2B149, #FFD700);
   transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(242, 177, 73, 0.5);
 }
 
 /* Image Container */
@@ -85,7 +88,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #F2B149;
   border-radius: 12px;
   gap: 15px;
 }
@@ -93,8 +97,8 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #ffffff;
+  border: 4px solid rgba(242, 177, 73, 0.3);
+  border-top: 4px solid #F2B149;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -105,7 +109,7 @@
 }
 
 .image-loading p {
-  color: white;
+  color: #F2B149;
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
@@ -124,8 +128,8 @@
 .letter-box {
   width: clamp(40px, 12vw, 50px);
   height: clamp(48px, 15vw, 60px);
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(242, 177, 73, 0.1);
+  border: 2px solid rgba(242, 177, 73, 0.3);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -138,18 +142,21 @@
 }
 
 .letter-box.revealed {
-  background: rgba(34, 197, 94, 0.3);
-  border-color: rgba(34, 197, 94, 0.6);
+  background: rgba(242, 177, 73, 0.3);
+  border-color: #F2B149;
+  color: #F2B149;
+  box-shadow: 0 0 15px rgba(242, 177, 73, 0.4);
 }
 
 .letter-box.user-input {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(242, 177, 73, 0.2);
+  border-color: rgba(242, 177, 73, 0.6);
+  color: #F2B149;
 }
 
 .letter-box:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(242, 177, 73, 0.3);
 }
 
 /* Input Form */
@@ -165,12 +172,12 @@
 .guess-input {
   padding: 12px 15px;
   font-size: clamp(1.1rem, 4vw, 1.3rem);
-  border: none;
+  border: 2px solid #F2B149;
   border-radius: 8px;
   text-align: center;
   text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
+  background: rgba(0, 0, 0, 0.8);
+  color: #F2B149;
   font-weight: bold;
   letter-spacing: 2px;
   box-sizing: border-box;
@@ -178,11 +185,12 @@
 
 .guess-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(242, 177, 73, 0.3);
+  background: rgba(0, 0, 0, 0.9);
 }
 
 .guess-input::placeholder {
-  color: #666;
+  color: rgba(242, 177, 73, 0.6);
   text-transform: none;
   letter-spacing: normal;
   font-size: clamp(0.9rem, 3vw, 1rem);
@@ -194,17 +202,18 @@
   font-weight: bold;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  background: linear-gradient(135deg, #F2B149 0%, #FFD700 100%);
+  color: #000;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(242, 177, 73, 0.3);
 }
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 25px rgba(242, 177, 73, 0.5);
 }
 
 .submit-button:disabled {
@@ -222,13 +231,13 @@
 }
 
 .correct-feedback {
-  background: rgba(34, 197, 94, 0.2);
-  border: 2px solid rgba(34, 197, 94, 0.5);
+  background: rgba(242, 177, 73, 0.2);
+  border: 2px solid #F2B149;
 }
 
 .incorrect-feedback {
-  background: rgba(239, 68, 68, 0.2);
-  border: 2px solid rgba(239, 68, 68, 0.5);
+  background: rgba(255, 69, 69, 0.2);
+  border: 2px solid rgba(255, 69, 69, 0.8);
 }
 
 .answer-feedback h3 {
@@ -363,21 +372,26 @@
 }
 
 .play-again-button {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #F2B149 0%, #FFD700 100%);
+  color: #000;
 }
 
 .share-button {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  border: 2px solid #F2B149;
+  color: #F2B149;
 }
 
 .play-again-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 5px 20px rgba(242, 177, 73, 0.4);
 }
 
 .share-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 5px 20px rgba(242, 177, 73, 0.4);
+  background: linear-gradient(135deg, #F2B149 0%, #FFD700 100%);
+  color: #000;
 }
 
 /* Final Game Results - Redesigned */
@@ -404,24 +418,25 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: linear-gradient(135deg, #F2B149 0%, #FFD700 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 15px;
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 25px rgba(242, 177, 73, 0.4);
   position: relative;
+  border: 3px solid #000;
 }
 
 .score-number {
   font-size: 2.5rem;
   font-weight: bold;
-  color: white;
+  color: #000;
 }
 
 .score-total {
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(0, 0, 0, 0.8);
   margin-left: 2px;
 }
 
@@ -430,6 +445,7 @@
   font-weight: bold;
   margin: 10px 0;
   opacity: 0.9;
+  color: #F2B149;
 }
 
 .compact-results {
@@ -453,13 +469,13 @@
 }
 
 .compact-result.correct {
-  background: rgba(34, 197, 94, 0.2);
-  border: 1px solid rgba(34, 197, 94, 0.4);
+  background: rgba(242, 177, 73, 0.2);
+  border: 1px solid #F2B149;
 }
 
 .compact-result.incorrect {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(255, 69, 69, 0.2);
+  border: 1px solid rgba(255, 69, 69, 0.6);
 }
 
 .result-number {
@@ -480,11 +496,11 @@
 }
 
 .result-status.correct {
-  color: #22c55e;
+  color: #F2B149;
 }
 
 .result-status.incorrect {
-  color: #ef4444;
+  color: #ff4545;
 }
 
 .action-buttons {
@@ -501,8 +517,8 @@
   font-weight: bold;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
+  background: linear-gradient(135deg, #F2B149 0%, #FFD700 100%);
+  color: #000;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
@@ -511,7 +527,7 @@
 
 .play-again-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 5px 20px rgba(242, 177, 73, 0.4);
 }
 
 /* Mobile-First Responsive Design */

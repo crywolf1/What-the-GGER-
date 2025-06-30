@@ -1,9 +1,9 @@
-import React from 'react';
-import { RotateCcw, Share2 } from 'lucide-react';
-import { useWordGame } from '../hooks/useWordGame';
-import { useFarcasterFrame } from '../hooks/useFarcasterFrame';
-import { sdk } from '@farcaster/frame-sdk';
-import './WordGame.css';
+import React from "react";
+import { RotateCcw, Share2 } from "lucide-react";
+import { useWordGame } from "../hooks/useWordGame";
+import { useFarcasterFrame } from "../hooks/useFarcasterFrame";
+import { sdk } from "@farcaster/frame-sdk";
+import "./WordGame.css";
 
 const WordGame: React.FC = () => {
   const {
@@ -23,11 +23,11 @@ const WordGame: React.FC = () => {
   const { isFrameContext } = useFarcasterFrame();
 
   const shareScore = async () => {
-    const correctCount = results.filter(r => r.isCorrect).length;
+    const correctCount = results.filter((r) => r.isCorrect).length;
     const totalCount = results.length;
-    
+
     const shareText = `I survived what the gger with a score of ${correctCount}/${totalCount}. My brain was thinking wild stuff, but I kept it clean. Can you keep your cool and match me?`;
-    
+
     try {
       if (isFrameContext) {
         // Use Farcaster SDK if in frame context
@@ -39,47 +39,54 @@ const WordGame: React.FC = () => {
         // Fallback to Web Share API or clipboard
         if (navigator.share) {
           await navigator.share({
-            title: 'what the gger - My Score',
+            title: "what the gger - My Score",
             text: shareText,
-            url: 'https://what-the-gger.vercel.app/'
+            url: "https://what-the-gger.vercel.app/",
           });
         } else {
           // Fallback to clipboard
-          await navigator.clipboard.writeText(`${shareText} https://what-the-gger.vercel.app/`);
-          alert('Score copied to clipboard!');
+          await navigator.clipboard.writeText(
+            `${shareText} https://what-the-gger.vercel.app/`
+          );
+          alert("Score copied to clipboard!");
         }
       }
     } catch (error) {
-      console.error('Error sharing score:', error);
+      console.error("Error sharing score:", error);
       // Fallback to clipboard
       try {
-        await navigator.clipboard.writeText(`${shareText} https://what-the-gger.vercel.app/`);
-        alert('Score copied to clipboard!');
+        await navigator.clipboard.writeText(
+          `${shareText} https://what-the-gger.vercel.app/`
+        );
+        alert("Score copied to clipboard!");
       } catch (clipboardError) {
-        console.error('Clipboard fallback failed:', clipboardError);
+        console.error("Clipboard fallback failed:", clipboardError);
       }
     }
   };
 
   const renderWordDisplay = () => {
     if (!currentWord) return null;
-    
-    return currentWord.word.split('').map((letter, index) => {
+
+    return currentWord.word.split("").map((letter, index) => {
       const isRevealed = currentWord.revealedPositions.includes(index);
-      const userLetter = userGuess[index] || '';
-      
+      const userLetter = userGuess[index] || "";
+
       // Show revealed letters, or user's typed letters, or underscores
-      let displayLetter = '';
+      let displayLetter = "";
       if (isRevealed) {
         displayLetter = letter;
       } else if (userLetter) {
         displayLetter = userLetter;
       } else {
-        displayLetter = '_';
+        displayLetter = "_";
       }
-      
+
       return (
-        <div key={index} className={`letter-box ${isRevealed ? 'revealed' : 'user-input'}`}>
+        <div
+          key={index}
+          className={`letter-box ${isRevealed ? "revealed" : "user-input"}`}
+        >
           {displayLetter}
         </div>
       );
@@ -94,14 +101,16 @@ const WordGame: React.FC = () => {
   };
 
   const canSubmit = userGuess.length === 6 && !isAnswered;
-  const correctCount = results.filter(r => r.isCorrect).length;
+  const correctCount = results.filter((r) => r.isCorrect).length;
 
   if (isGameComplete) {
     return (
       <div className="word-game final-game">
         <div className="game-header">
           <h1>� Game Complete!</h1>
-          <p>Final Score: {correctCount}/{results.length}</p>
+          <p>
+            Final Score: {correctCount}/{results.length}
+          </p>
         </div>
 
         <div className="game-content final-content">
@@ -111,20 +120,32 @@ const WordGame: React.FC = () => {
               <span className="score-total">/{results.length}</span>
             </div>
             <p className="score-text">
-              {correctCount === results.length ? 'Perfect Score! 🏆' : 
-               correctCount >= results.length * 0.8 ? 'Great Job! 🌟' :
-               correctCount >= results.length * 0.6 ? 'Good Work! 👍' :
-               'Keep Practicing! 💪'}
+              {correctCount === results.length
+                ? "Perfect Score! 🏆"
+                : correctCount >= results.length * 0.8
+                ? "Great Job! 🌟"
+                : correctCount >= results.length * 0.6
+                ? "Good Work! 👍"
+                : "Keep Practicing! 💪"}
             </p>
           </div>
 
           <div className="compact-results">
             {results.map((result, index) => (
-              <div key={index} className={`compact-result ${result.isCorrect ? 'correct' : 'incorrect'}`}>
+              <div
+                key={index}
+                className={`compact-result ${
+                  result.isCorrect ? "correct" : "incorrect"
+                }`}
+              >
                 <span className="result-number">{index + 1}</span>
                 <span className="result-word">{result.word}</span>
-                <span className={`result-status ${result.isCorrect ? 'correct' : 'incorrect'}`}>
-                  {result.isCorrect ? '✓' : '✗'}
+                <span
+                  className={`result-status ${
+                    result.isCorrect ? "correct" : "incorrect"
+                  }`}
+                >
+                  {result.isCorrect ? "✓" : "✗"}
                 </span>
               </div>
             ))}
@@ -148,7 +169,7 @@ const WordGame: React.FC = () => {
   return (
     <div className="word-game">
       <div className="game-header">
-        <h1>🎯 what the gger</h1>
+        <h1>what the gger</h1>
         <p>Word {currentWordIndex + 1} of 13</p>
       </div>
 
@@ -157,8 +178,8 @@ const WordGame: React.FC = () => {
           <>
             {/* Progress indicator */}
             <div className="progress-bar">
-              <div 
-                className="progress-fill" 
+              <div
+                className="progress-fill"
                 style={{ width: `${((currentWordIndex + 1) / 13) * 100}%` }}
               ></div>
             </div>
@@ -171,21 +192,20 @@ const WordGame: React.FC = () => {
                   <p>{isAnswered ? "Loading next word..." : "Processing..."}</p>
                 </div>
               ) : (
-                <img 
-                  src={currentWord.imageUrl} 
+                <img
+                  src={currentWord.imageUrl}
                   alt={`Guess word ${currentWordIndex + 1}`}
                   className="game-image"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                    (e.target as HTMLImageElement).src =
+                      "https://via.placeholder.com/400x300?text=Image+Not+Found";
                   }}
                 />
               )}
             </div>
 
             {/* Word Display with live typing */}
-            <div className="word-display">
-              {renderWordDisplay()}
-            </div>
+            <div className="word-display">{renderWordDisplay()}</div>
 
             {/* Answer feedback */}
             {isAnswered && (
@@ -193,14 +213,20 @@ const WordGame: React.FC = () => {
                 {isCorrect ? (
                   <div className="correct-feedback">
                     <h3>🎉 Correct!</h3>
-                    <p>The word was: <strong>{currentWord.word}</strong></p>
+                    <p>
+                      The word was: <strong>{currentWord.word}</strong>
+                    </p>
                     <p className="auto-next">Moving to next word...</p>
                   </div>
                 ) : (
                   <div className="incorrect-feedback">
                     <h3>❌ Incorrect!</h3>
-                    <p>Your guess: <strong>{userGuess}</strong></p>
-                    <p>The correct word was: <strong>{currentWord.word}</strong></p>
+                    <p>
+                      Your guess: <strong>{userGuess}</strong>
+                    </p>
+                    <p>
+                      The correct word was: <strong>{currentWord.word}</strong>
+                    </p>
                     <p className="auto-next">Moving to next word...</p>
                   </div>
                 )}
@@ -220,8 +246,8 @@ const WordGame: React.FC = () => {
                   autoComplete="off"
                   autoFocus
                 />
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={!canSubmit}
                   className="submit-button"
                 >
