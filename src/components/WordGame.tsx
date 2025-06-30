@@ -1,5 +1,5 @@
-import React from "react";
-import { RotateCcw, Share2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { RotateCcw, Share2, Plus } from "lucide-react";
 import { useWordGame } from "../hooks/useWordGame";
 import { useFarcasterFrame } from "../hooks/useFarcasterFrame";
 import { sdk } from "@farcaster/frame-sdk";
@@ -21,6 +21,34 @@ const WordGame: React.FC = () => {
   } = useWordGame();
 
   const { isFrameContext } = useFarcasterFrame();
+  
+  const [showAddMiniApp, setShowAddMiniApp] = useState(false);
+  const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(false);
+
+  // Show add mini app prompt when in frame context and not dismissed
+  useEffect(() => {
+    if (isFrameContext && !addMiniAppDismissed) {
+      setShowAddMiniApp(true);
+    }
+  }, [isFrameContext, addMiniAppDismissed]);
+
+  const handleAddMiniApp = async () => {
+    try {
+      await sdk.actions.addMiniApp();
+      setShowAddMiniApp(false);
+      setAddMiniAppDismissed(true);
+    } catch (error) {
+      console.error("Error adding mini app:", error);
+      // If user rejects or there's an error, just dismiss the prompt
+      setShowAddMiniApp(false);
+      setAddMiniAppDismissed(true);
+    }
+  };
+
+  const dismissAddMiniApp = () => {
+    setShowAddMiniApp(false);
+    setAddMiniAppDismissed(true);
+  };
 
   const shareScore = async () => {
     const correctCount = results.filter((r) => r.isCorrect).length;
@@ -168,6 +196,25 @@ const WordGame: React.FC = () => {
 
   return (
     <div className="word-game">
+      {/* Add Mini App Prompt */}
+      {showAddMiniApp && (
+        <div className="add-miniapp-overlay">
+          <div className="add-miniapp-modal">
+            <h2>🎯 Add "what the gger" to your Apps!</h2>
+            <p>Keep this word guessing game handy for quick access anytime.</p>
+            <div className="add-miniapp-buttons">
+              <button onClick={handleAddMiniApp} className="add-miniapp-button">
+                <Plus size={20} />
+                Add to My Apps
+              </button>
+              <button onClick={dismissAddMiniApp} className="dismiss-button">
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="game-header">
         <h1>what the gger</h1>
         <p>Word {currentWordIndex + 1} of 13</p>
