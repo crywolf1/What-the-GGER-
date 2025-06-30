@@ -1,0 +1,12 @@
+{
+  "title": "Word Guessing Game",
+  "description": "Guess the 6-letter word from the image clues! Fun word puzzle game.",
+  "image": "https://what-the-gger.vercel.app/images/burger.jpg",
+  "buttons": [
+    {
+      "label": "Play Word Game",
+      "action": "link",
+      "target": "https://what-the-gger.vercel.app/"
+    }
+  ]
+}

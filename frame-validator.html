@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame Validator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .validator {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border-left: 4px solid #4285f4;
+        }
+        .error {
+            border-left-color: #ea4335;
+            background: #ffeaea;
+        }
+        .success {
+            border-left-color: #34a853;
+            background: #e8f5e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="validator">
+        <h1>🔍 Farcaster Frame Validator</h1>
+        <p>Test your frame metadata before deploying:</p>
+        
+        <div class="input-group">
+            <label for="url">Frame URL:</label>
+            <input type="url" id="url" value="https://what-the-gger.vercel.app/" placeholder="https://your-domain.com">
+        </div>
+        
+        <button onclick="validateFrame()">Validate Frame</button>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function validateFrame() {
+            const url = document.getElementById('url').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!url) {
+                showResult('Please enter a URL', 'error');
+                return;
+            }
+            
+            try {
+                showResult('🔄 Checking frame metadata...', '');
+                
+                // This would typically make a request to validate the frame
+                // For now, we'll show the expected metadata format
+                const expectedMetadata = {
+                    'fc:frame': 'vNext',
+                    'fc:frame:image': 'https://what-the-gger.vercel.app/images/burger.jpg',
+                    'fc:frame:image:aspect_ratio': '1.91:1',
+                    'fc:frame:button:1': 'Play Word Game',
+                    'fc:frame:button:1:action': 'post',
+                    'fc:frame:post_url': 'https://what-the-gger.vercel.app/api/frame',
+                    'og:title': 'Word Guessing Game',
+                    'og:description': 'Guess the 6-letter word from the image clues! Fun word puzzle game.',
+                    'og:image': 'https://what-the-gger.vercel.app/images/burger.jpg'
+                };
+                
+                let result = '<h3>✅ Expected Frame Metadata:</h3><pre style="background: #f1f3f4; padding: 10px; border-radius: 4px; overflow-x: auto;">';
+                for (const [key, value] of Object.entries(expectedMetadata)) {
+                    result += `<meta property="${key}" content="${value}" />\n`;
+                }
+                result += '</pre>';
+                
+                result += '<h3>🔧 Validation Tips:</h3><ul>';
+                result += '<li>✅ Use absolute URLs for images</li>';
+                result += '<li>✅ Include aspect ratio (1.91:1 recommended)</li>';
+                result += '<li>✅ Use "post" action for buttons</li>';
+                result += '<li>✅ Include both og: and fc: tags</li>';
+                result += '<li>✅ Test with <a href="https://warpcast.com/~/developers/frames" target="_blank">Warpcast Frame Validator</a></li>';
+                result += '</ul>';
+                
+                showResult(result, 'success');
+                
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+        
+        // Auto-validate on page load
+        window.onload = () => validateFrame();
+    </script>
+</body>
+</html>

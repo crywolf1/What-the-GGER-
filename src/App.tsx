@@ -23,7 +23,8 @@ function App() {
       <FarcasterMeta 
         title="Word Guessing Game"
         description="Guess the 6-letter word from the image clues! 13 challenging words to solve."
-        imageUrl="/images/burger.jpg"
+        imageUrl="https://what-the-gger.vercel.app/images/burger.jpg"
+        appUrl="https://what-the-gger.vercel.app"
       />
       
       {/* Optional: Show user info if running in Farcaster */}
