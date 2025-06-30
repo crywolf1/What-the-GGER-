@@ -4,7 +4,40 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Word Guessing Game - Farcaster Mini App</title>
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Word Guessing Game" />
+    <meta property="og:description" content="Guess the 6-letter word from the image clues! Fun word puzzle game." />
+    <meta property="og:image" content="/images/burger.jpg" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Farcaster Frame Metadata -->
+    <meta
+      name="fc:frame"
+      content='{
+        "version": "next",
+        "imageUrl": "/images/burger.jpg",
+        "button": {
+          "title": "Play Word Game",
+          "action": {
+            "type": "launch_frame",
+            "name": "Word Guessing Game",
+            "url": "https://your-domain.vercel.app/",
+            "splashImageUrl": "/images/burger.jpg",
+            "splashBackgroundColor": "#667eea"
+          }
+        }
+      }'
+      data-rh="true"
+    />
+    
+    <!-- Traditional Farcaster Frame Tags (fallback) -->
+    <meta property="fc:frame" content="vNext" />
+    <meta property="fc:frame:image" content="/images/burger.jpg" />
+    <meta property="fc:frame:button:1" content="Play Game" />
+    <meta property="fc:frame:button:1:action" content="post" />
+    <meta property="fc:frame:post_url" content="https://your-domain.vercel.app/" />
   </head>
   <body>
     <div id="root"></div>

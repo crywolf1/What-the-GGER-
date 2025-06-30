@@ -1,0 +1,18 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjM0NDIwMywidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDUyMjAyODE2QUNGMWY2RGVjMTZGMzkxZDkxY2NhYUQ2QTI2MkY1NUQifQ",
+    "payload": "eyJkb21haW4iOiJ3aGF0LXRoZS1nZ2VyLnZlcmNlbC5hcHAifQ",
+    "signature": "MHhhMmQ0YzFkMzhjNDdmMWQyOTY1MDA4M2E3OWRhYTRhMjUxM2JkOTlkNWJiZjgzYTcwMjA1ZGJlZjEzYTFlNTE5NDRkMDJkOTdkYTQ2ZjU1MWFjOGYzOTkzYWRlMGE5OTNlMjUzNjkwMzA4MDkzNWIzMWZkYWYyZjE3NDE1YjZhYzFi"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Example Frame",
+    "iconUrl": "https://what-the-gger.vercel.app/icon.png",
+    "homeUrl": "https://what-the-gger.vercel.app",
+    "imageUrl": "https://what-the-gger.vercel.app/image.png",
+    "buttonTitle": "Check this out",
+    "splashImageUrl": "https://what-the-gger.vercel.app/splash.png",
+    "splashBackgroundColor": "#eeccff",
+    "webhookUrl": "https://what-the-gger.vercel.app/api/webhook"
+  }
+}
