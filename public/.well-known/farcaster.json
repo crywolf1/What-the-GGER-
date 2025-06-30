@@ -6,13 +6,12 @@
   },
   "frame": {
     "version": "1",
-    "name": "Example Frame",
-    "iconUrl": "https://what-the-gger.vercel.app/icon.png",
+    "name": "Word Guessing Game",
+    "iconUrl": "https://what-the-gger.vercel.app/images/burger.jpg",
     "homeUrl": "https://what-the-gger.vercel.app",
-    "imageUrl": "https://what-the-gger.vercel.app/image.png",
-    "buttonTitle": "Check this out",
-    "splashImageUrl": "https://what-the-gger.vercel.app/splash.png",
-    "splashBackgroundColor": "#eeccff",
-    "webhookUrl": "https://what-the-gger.vercel.app/api/webhook"
+    "imageUrl": "https://what-the-gger.vercel.app/images/burger.jpg",
+    "buttonTitle": "Play Word Game",
+    "splashImageUrl": "https://what-the-gger.vercel.app/images/burger.jpg",
+    "splashBackgroundColor": "#667eea"
   }
 }
