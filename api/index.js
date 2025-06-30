@@ -6,13 +6,21 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Debug environment variables
+console.log('Environment variables loaded:');
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+console.log('PORT:', process.env.PORT);
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
 let db;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/whatthegger';
+// Temporarily hardcode the connection string to test
+const MONGODB_URI = 'mongodb+srv://Dani:Dani1246@cluster0.lvnzddp.mongodb.net/whatthegger?retryWrites=true&w=majority';
+
+console.log('Using MongoDB URI:', MONGODB_URI);
 
 async function connectToDatabase() {
   try {

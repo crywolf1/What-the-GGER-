@@ -1,0 +1,9 @@
+{
+  "name": "whatthegger-api",
+  "version": "1.0.0",
+  "description": "API for what the gger leaderboard",
+  "main": "index.js",
+  "dependencies": {
+    "mongodb": "^6.3.0"
+  }
+}

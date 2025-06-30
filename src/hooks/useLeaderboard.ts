@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { LeaderboardEntry } from '../types/game';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-api-domain.com' // Replace with your deployed API URL
+  ? '' // Use relative URLs in production (same domain)
   : 'http://localhost:3001';
 
 export const useLeaderboard = () => {
@@ -53,7 +53,7 @@ export const useLeaderboard = () => {
     setError(null);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/api/leaderboard/submit`, {
+      const response = await fetch(`${API_BASE_URL}/api/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export const useLeaderboard = () => {
   // Get user's rank
   const getUserRank = useCallback(async (fid: number): Promise<number> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/leaderboard/user/${fid}`);
+      const response = await fetch(`${API_BASE_URL}/api/user/${fid}`);
       if (response.ok) {
         const data = await response.json();
         return data.rank;
