@@ -54,20 +54,32 @@ const WordGame: React.FC = () => {
 
   if (isGameComplete) {
     return (
-      <div className="word-game">
+      <div className="word-game final-game">
         <div className="game-header">
           <h1>� Game Complete!</h1>
           <p>Final Score: {correctCount}/{results.length}</p>
         </div>
 
-        <div className="game-content">
-          <div className="final-results">
+        <div className="game-content final-content">
+          <div className="score-summary">
+            <div className="score-circle">
+              <span className="score-number">{correctCount}</span>
+              <span className="score-total">/{results.length}</span>
+            </div>
+            <p className="score-text">
+              {correctCount === results.length ? 'Perfect Score! 🏆' : 
+               correctCount >= results.length * 0.8 ? 'Great Job! 🌟' :
+               correctCount >= results.length * 0.6 ? 'Good Work! 👍' :
+               'Keep Practicing! 💪'}
+            </p>
+          </div>
+
+          <div className="compact-results">
             {results.map((result, index) => (
-              <div key={index} className={`result-summary ${result.isCorrect ? 'correct' : 'incorrect'}`}>
-                <span className="word-number">#{index + 1}</span>
-                <span className="word-result">{result.word}</span>
-                <span className="guess-result">Your guess: {result.guess || 'No guess'}</span>
-                <span className={`status ${result.isCorrect ? 'correct' : 'incorrect'}`}>
+              <div key={index} className={`compact-result ${result.isCorrect ? 'correct' : 'incorrect'}`}>
+                <span className="result-number">{index + 1}</span>
+                <span className="result-word">{result.word}</span>
+                <span className={`result-status ${result.isCorrect ? 'correct' : 'incorrect'}`}>
                   {result.isCorrect ? '✓' : '✗'}
                 </span>
               </div>
