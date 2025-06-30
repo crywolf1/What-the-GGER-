@@ -23,31 +23,107 @@ const WordGame: React.FC = () => {
   const { isFrameContext } = useFarcasterFrame();
   
   const [showAddMiniApp, setShowAddMiniApp] = useState(false);
-  const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(false);
-
-  // Show add mini app prompt when in frame context and not dismissed
-  useEffect(() => {
-    if (isFrameContext && !addMiniAppDismissed) {
-      setShowAddMiniApp(true);
+  const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(() => {
+    // Check localStorage for dismissed state
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('addMiniAppDismissed') === 'true';
     }
-  }, [isFrameContext, addMiniAppDismissed]);
+    return false;
+  });
+  const [isAppAdded, setIsAppAdded] = useState(() => {
+    // Check localStorage for added state
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('miniAppAdded') === 'true';
+    }
+    return false;
+  });
+
+  // Listen for Farcaster SDK events
+  useEffect(() => {
+    if (!isFrameContext) return;
+
+    // Listen for frameAdded event
+    const handleFrameAdded = () => {
+      console.log("Frame added event received");
+      setIsAppAdded(true);
+      setShowAddMiniApp(false);
+      setAddMiniAppDismissed(true);
+      
+      // Persist to localStorage
+      localStorage.setItem('miniAppAdded', 'true');
+      localStorage.setItem('addMiniAppDismissed', 'true');
+    };
+
+    // Listen for frameRemoved event
+    const handleFrameRemoved = () => {
+      console.log("Frame removed event received");
+      setIsAppAdded(false);
+      setAddMiniAppDismissed(false);
+      
+      // Update localStorage
+      localStorage.setItem('miniAppAdded', 'false');
+      localStorage.setItem('addMiniAppDismissed', 'false');
+    };
+
+    // Register event listeners
+    sdk.on('frameAdded', handleFrameAdded);
+    sdk.on('frameRemoved', handleFrameRemoved);
+
+    // Cleanup listeners on unmount
+    return () => {
+      sdk.removeListener('frameAdded', handleFrameAdded);
+      sdk.removeListener('frameRemoved', handleFrameRemoved);
+    };
+  }, [isFrameContext]);
+
+  // Show add mini app prompt when in frame context, not dismissed, and not already added
+  useEffect(() => {
+    if (isFrameContext && !addMiniAppDismissed && !isAppAdded) {
+      // Small delay to let the app load first
+      const timer = setTimeout(() => {
+        setShowAddMiniApp(true);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isFrameContext, addMiniAppDismissed, isAppAdded]);
 
   const handleAddMiniApp = async () => {
     try {
       await sdk.actions.addMiniApp();
-      setShowAddMiniApp(false);
-      setAddMiniAppDismissed(true);
-    } catch (error) {
+      // Don't immediately hide - wait for frameAdded event
+      console.log("addMiniApp action completed successfully");
+    } catch (error: unknown) {
       console.error("Error adding mini app:", error);
-      // If user rejects or there's an error, just dismiss the prompt
-      setShowAddMiniApp(false);
-      setAddMiniAppDismissed(true);
+      
+      // Handle specific error types
+      const errorObj = error as { name?: string };
+      if (errorObj.name === 'RejectedByUser') {
+        console.log("User rejected adding mini app");
+        setShowAddMiniApp(false);
+        setAddMiniAppDismissed(true);
+        localStorage.setItem('addMiniAppDismissed', 'true');
+      } else if (errorObj.name === 'InvalidDomainManifestJson') {
+        console.error("Invalid farcaster.json manifest");
+        setShowAddMiniApp(false);
+        setAddMiniAppDismissed(true);
+        localStorage.setItem('addMiniAppDismissed', 'true');
+      } else {
+        // For other errors, just dismiss
+        console.error("Unknown error:", error);
+        setShowAddMiniApp(false);
+        setAddMiniAppDismissed(true);
+        localStorage.setItem('addMiniAppDismissed', 'true');
+      }
     }
   };
 
   const dismissAddMiniApp = () => {
     setShowAddMiniApp(false);
     setAddMiniAppDismissed(true);
+    
+    // Persist dismissal to localStorage
+    localStorage.setItem('addMiniAppDismissed', 'true');
   };
 
   const shareScore = async () => {
