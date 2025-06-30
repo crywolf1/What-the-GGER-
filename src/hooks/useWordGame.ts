@@ -8,6 +8,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         userGuess: action.payload.toUpperCase().slice(0, 6),
+        isTransitioning: false,
       };
     
     case 'SUBMIT_GUESS': {
@@ -25,6 +26,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         isAnswered: true,
         isCorrect,
         results: [...state.results, newResult],
+        isTransitioning: true,
       };
     }
     
@@ -39,6 +41,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         isAnswered: false,
         isCorrect: false,
         isGameComplete: isComplete,
+        isTransitioning: false,
       };
     }
     
@@ -50,6 +53,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         isAnswered: false,
         isCorrect: false,
         isGameComplete: false,
+        isTransitioning: false,
         results: [],
       };
     
@@ -66,6 +70,7 @@ export function useWordGame() {
     isAnswered: false,
     isCorrect: false,
     isGameComplete: false,
+    isTransitioning: false,
     results: [],
   });
 
@@ -77,10 +82,10 @@ export function useWordGame() {
   
   const submitGuess = useCallback(() => {
     dispatch({ type: 'SUBMIT_GUESS' });
-    // Automatically go to next word after 2 seconds
+    // Automatically go to next word after 2.5 seconds (giving time for loading to show)
     setTimeout(() => {
       dispatch({ type: 'NEXT_WORD' });
-    }, 2000);
+    }, 2500);
   }, []);
   
   const nextWord = useCallback(() => {

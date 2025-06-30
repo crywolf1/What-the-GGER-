@@ -12,6 +12,7 @@ export interface GameState {
   isAnswered: boolean;
   isCorrect: boolean;
   isGameComplete: boolean;
+  isTransitioning: boolean;
   results: { word: string; guess: string; isCorrect: boolean }[];
 }
 

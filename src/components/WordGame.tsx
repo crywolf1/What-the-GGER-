@@ -1,6 +1,8 @@
 import React from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Share2 } from 'lucide-react';
 import { useWordGame } from '../hooks/useWordGame';
+import { useFarcasterFrame } from '../hooks/useFarcasterFrame';
+import { sdk } from '@farcaster/frame-sdk';
 import './WordGame.css';
 
 const WordGame: React.FC = () => {
@@ -11,11 +13,53 @@ const WordGame: React.FC = () => {
     isAnswered,
     isCorrect,
     isGameComplete,
+    isTransitioning,
     results,
     setGuess,
     submitGuess,
     resetGame,
   } = useWordGame();
+
+  const { isFrameContext } = useFarcasterFrame();
+
+  const shareScore = async () => {
+    const correctCount = results.filter(r => r.isCorrect).length;
+    const totalCount = results.length;
+    
+    const shareText = `I survived what the gger with a score of ${correctCount}/${totalCount}. My brain was thinking wild stuff, but I kept it clean. Can you keep your cool and match me?`;
+    
+    try {
+      if (isFrameContext) {
+        // Use Farcaster SDK if in frame context
+        await sdk.actions.composeCast({
+          text: shareText,
+          embeds: ["https://what-the-gger.vercel.app/"],
+        });
+      } else {
+        // Fallback to Web Share API or clipboard
+        if (navigator.share) {
+          await navigator.share({
+            title: 'what the gger - My Score',
+            text: shareText,
+            url: 'https://what-the-gger.vercel.app/'
+          });
+        } else {
+          // Fallback to clipboard
+          await navigator.clipboard.writeText(`${shareText} https://what-the-gger.vercel.app/`);
+          alert('Score copied to clipboard!');
+        }
+      }
+    } catch (error) {
+      console.error('Error sharing score:', error);
+      // Fallback to clipboard
+      try {
+        await navigator.clipboard.writeText(`${shareText} https://what-the-gger.vercel.app/`);
+        alert('Score copied to clipboard!');
+      } catch (clipboardError) {
+        console.error('Clipboard fallback failed:', clipboardError);
+      }
+    }
+  };
 
   const renderWordDisplay = () => {
     if (!currentWord) return null;
@@ -87,6 +131,10 @@ const WordGame: React.FC = () => {
           </div>
 
           <div className="action-buttons">
+            <button onClick={shareScore} className="share-button">
+              <Share2 size={20} />
+              Share Score
+            </button>
             <button onClick={resetGame} className="play-again-button">
               <RotateCcw size={20} />
               Play Again
@@ -100,7 +148,7 @@ const WordGame: React.FC = () => {
   return (
     <div className="word-game">
       <div className="game-header">
-        <h1>🎯 Word Guessing Game</h1>
+        <h1>🎯 what the gger</h1>
         <p>Word {currentWordIndex + 1} of 13</p>
       </div>
 
@@ -115,16 +163,23 @@ const WordGame: React.FC = () => {
               ></div>
             </div>
 
-            {/* Image Display */}
+            {/* Image Display with Loading State */}
             <div className="image-container">
-              <img 
-                src={currentWord.imageUrl} 
-                alt={`Guess word ${currentWordIndex + 1}`}
-                className="game-image"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
-                }}
-              />
+              {isTransitioning || isAnswered ? (
+                <div className="image-loading">
+                  <div className="loading-spinner"></div>
+                  <p>{isAnswered ? "Loading next word..." : "Processing..."}</p>
+                </div>
+              ) : (
+                <img 
+                  src={currentWord.imageUrl} 
+                  alt={`Guess word ${currentWordIndex + 1}`}
+                  className="game-image"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
+                  }}
+                />
+              )}
             </div>
 
             {/* Word Display with live typing */}
