@@ -23,7 +23,7 @@ const WordGame: React.FC = () => {
   } = useWordGame();
 
   const { isFrameContext, user } = useFarcasterFrame();
-  const { leaderboard, addScore, getUserRank, getUserScore } = useLeaderboard();
+  const { leaderboard, addScore, getUserRank, getUserScore, clearLeaderboard } = useLeaderboard();
   
   const [showAddMiniApp, setShowAddMiniApp] = useState(false);
   const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(() => {
@@ -43,26 +43,29 @@ const WordGame: React.FC = () => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
-  // Test function to add mock leaderboard data
-  const addTestData = () => {
-    console.log('Adding test leaderboard data');
-    addScore({
-      fid: 12345,
-      username: 'testuser',
-      displayName: 'Test User',
-      pfpUrl: 'https://via.placeholder.com/40',
-      score: 10,
-      totalWords: 13,
-    });
-    addScore({
-      fid: 67890,
-      username: 'anotheruser',
-      displayName: 'Another User',
-      pfpUrl: 'https://via.placeholder.com/40',
-      score: 8,
-      totalWords: 13,
-    });
-  };
+  // Clear any test data on app startup
+  useEffect(() => {
+    // Check if there are test users in the leaderboard and remove them
+    const hasTestData = leaderboard.some(entry => 
+      entry.fid === 12345 || entry.fid === 67890 || 
+      entry.username === 'testuser' || entry.username === 'anotheruser'
+    );
+    
+    if (hasTestData) {
+      console.log('Clearing test data from leaderboard');
+      const realEntries = leaderboard.filter(entry => 
+        entry.fid !== 12345 && entry.fid !== 67890 &&
+        entry.username !== 'testuser' && entry.username !== 'anotheruser'
+      );
+      
+      if (realEntries.length === 0) {
+        clearLeaderboard();
+      } else {
+        // Re-save without test data
+        localStorage.setItem('whatTheGgerLeaderboard', JSON.stringify(realEntries));
+      }
+    }
+  }, [leaderboard, clearLeaderboard]);
 
   // Listen for Farcaster SDK events
   useEffect(() => {
@@ -326,9 +329,6 @@ const WordGame: React.FC = () => {
               <Trophy size={20} />
               Leaderboard
             </button>
-            <button onClick={addTestData} className="test-button" style={{ backgroundColor: '#666', marginLeft: '10px' }}>
-              Add Test Data
-            </button>
             <button onClick={shareScore} className="share-button">
               <Share2 size={20} />
               Share Score
@@ -379,26 +379,17 @@ const WordGame: React.FC = () => {
             <h1>what the gger</h1>
             <p>Word {currentWordIndex + 1} of 13</p>
           </div>
-          <div className="header-buttons">
-            <button 
-              onClick={addTestData} 
-              className="header-test-button"
-              title="Add Test Data"
-            >
-              +
-            </button>
-            <button 
-              onClick={() => {
-                console.log('Header leaderboard button clicked');
-                console.log('Current leaderboard:', leaderboard);
-                setShowLeaderboard(true);
-              }} 
-              className="header-leaderboard-button"
-              title="View Leaderboard"
-            >
-              <Trophy size={24} />
-            </button>
-          </div>
+          <button 
+            onClick={() => {
+              console.log('Header leaderboard button clicked');
+              console.log('Current leaderboard:', leaderboard);
+              setShowLeaderboard(true);
+            }} 
+            className="header-leaderboard-button"
+            title="View Leaderboard"
+          >
+            <Trophy size={24} />
+          </button>
         </div>
       </div>
 

@@ -86,11 +86,18 @@ export const useLeaderboard = () => {
     return leaderboard.find(entry => entry.fid === fid) || null;
   }, [leaderboard]);
 
+  // Clear all leaderboard data
+  const clearLeaderboard = useCallback(() => {
+    localStorage.removeItem('whatTheGgerLeaderboard');
+    setLeaderboard([]);
+  }, []);
+
   return {
     leaderboard,
     isLoading,
     addScore,
     getUserRank,
     getUserScore,
+    clearLeaderboard,
   };
 };
