@@ -87,6 +87,44 @@ Your API will be available at:
 
 ### 7. **Common Issues & Solutions**
 
+#### FUNCTION_INVOCATION_FAILED / Runtime Error
+If you see runtime errors during deployment:
+
+1. **Check vercel.json configuration**:
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
+```
+
+2. **Ensure API package.json has correct type**:
+```json
+{
+  "type": "module",
+  "dependencies": {
+    "mongodb": "^6.3.0"
+  }
+}
+```
+
+3. **Check function format** - Each API function should:
+```javascript
+export default async function handler(req, res) {
+  // Your function code
+}
+```
+
 #### API Not Working
 - Check Environment Variables in Vercel dashboard
 - Check function logs in Vercel dashboard
