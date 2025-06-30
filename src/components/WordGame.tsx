@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { RotateCcw, Share2, Plus } from "lucide-react";
+import { RotateCcw, Share2, Plus, Trophy } from "lucide-react";
 import { useWordGame } from "../hooks/useWordGame";
 import { useFarcasterFrame } from "../hooks/useFarcasterFrame";
+import { useLeaderboard } from "../hooks/useLeaderboard";
 import { sdk } from "@farcaster/frame-sdk";
+import Leaderboard from "./Leaderboard";
 import "./WordGame.css";
 
 const WordGame: React.FC = () => {
@@ -20,7 +22,8 @@ const WordGame: React.FC = () => {
     resetGame,
   } = useWordGame();
 
-  const { isFrameContext } = useFarcasterFrame();
+  const { isFrameContext, user } = useFarcasterFrame();
+  const { leaderboard, addScore, getUserRank, getUserScore } = useLeaderboard();
   
   const [showAddMiniApp, setShowAddMiniApp] = useState(false);
   const [addMiniAppDismissed, setAddMiniAppDismissed] = useState(() => {
@@ -37,6 +40,8 @@ const WordGame: React.FC = () => {
     }
     return false;
   });
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
   // Listen for Farcaster SDK events
   useEffect(() => {
@@ -125,6 +130,22 @@ const WordGame: React.FC = () => {
     // Persist dismissal to localStorage
     localStorage.setItem('addMiniAppDismissed', 'true');
   };
+
+  // Submit score when game completes (for Farcaster users)
+  useEffect(() => {
+    if (isGameComplete && user && !scoreSubmitted) {
+      const correctCount = results.filter(r => r.isCorrect).length;
+      addScore({
+        fid: user.fid,
+        username: user.username,
+        displayName: user.displayName,
+        pfpUrl: user.pfpUrl,
+        score: correctCount,
+        totalWords: results.length,
+      });
+      setScoreSubmitted(true);
+    }
+  }, [isGameComplete, user, scoreSubmitted, results, addScore]);
 
   const shareScore = async () => {
     const correctCount = results.filter((r) => r.isCorrect).length;
@@ -232,6 +253,24 @@ const WordGame: React.FC = () => {
                 ? "Good Work! 👍"
                 : "Keep Practicing! 💪"}
             </p>
+            
+            {/* User Rank Display */}
+            {user && (
+              <div className="user-rank">
+                {(() => {
+                  const rank = getUserRank(user.fid);
+                  const userScore = getUserScore(user.fid);
+                  if (rank > 0 && userScore) {
+                    return (
+                      <p className="rank-text">
+                        🎯 Your Rank: #{rank} • Best: {userScore.score}/{userScore.totalWords} ({userScore.percentage}%)
+                      </p>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+            )}
           </div>
 
           <div className="compact-results">
@@ -256,6 +295,10 @@ const WordGame: React.FC = () => {
           </div>
 
           <div className="action-buttons">
+            <button onClick={() => setShowLeaderboard(true)} className="leaderboard-button">
+              <Trophy size={20} />
+              Leaderboard
+            </button>
             <button onClick={shareScore} className="share-button">
               <Share2 size={20} />
               Share Score
@@ -289,6 +332,15 @@ const WordGame: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Leaderboard Modal */}
+      {showLeaderboard && (
+        <Leaderboard
+          leaderboard={leaderboard}
+          currentUserFid={user?.fid}
+          onClose={() => setShowLeaderboard(false)}
+        />
       )}
 
       <div className="game-header">

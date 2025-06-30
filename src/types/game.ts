@@ -5,6 +5,17 @@ export interface GameWord {
   revealedPositions: number[]; // Positions to show (0-indexed)
 }
 
+export interface LeaderboardEntry {
+  fid: number;
+  username?: string;
+  displayName?: string;
+  pfpUrl?: string;
+  score: number;
+  totalWords: number;
+  timestamp: number;
+  percentage: number;
+}
+
 export interface GameState {
   words: GameWord[];
   currentWordIndex: number;
