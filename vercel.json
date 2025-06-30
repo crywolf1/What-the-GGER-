@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "api/health.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/leaderboard.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/submit.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/user.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
