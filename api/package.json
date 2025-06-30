@@ -1,15 +1,5 @@
 {
-  "name": "whatthegger-api",
-  "version": "1.0.0",
-  "description": "Backend API for what the gger leaderboard", 
-  "main": "index.js",
-  "engines": {
-    "node": "18.x"
-  },
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
+  "type": "module",
   "dependencies": {
     "mongodb": "^6.3.0"
   }
