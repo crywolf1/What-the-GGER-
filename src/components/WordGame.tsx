@@ -43,6 +43,27 @@ const WordGame: React.FC = () => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
+  // Test function to add mock leaderboard data
+  const addTestData = () => {
+    console.log('Adding test leaderboard data');
+    addScore({
+      fid: 12345,
+      username: 'testuser',
+      displayName: 'Test User',
+      pfpUrl: 'https://via.placeholder.com/40',
+      score: 10,
+      totalWords: 13,
+    });
+    addScore({
+      fid: 67890,
+      username: 'anotheruser',
+      displayName: 'Another User',
+      pfpUrl: 'https://via.placeholder.com/40',
+      score: 8,
+      totalWords: 13,
+    });
+  };
+
   // Listen for Farcaster SDK events
   useEffect(() => {
     if (!isFrameContext) return;
@@ -133,8 +154,10 @@ const WordGame: React.FC = () => {
 
   // Submit score when game completes (for Farcaster users)
   useEffect(() => {
+    console.log('Score submission effect triggered:', { isGameComplete, user, scoreSubmitted });
     if (isGameComplete && user && !scoreSubmitted) {
       const correctCount = results.filter(r => r.isCorrect).length;
+      console.log('Submitting score:', { correctCount, totalWords: results.length, user });
       addScore({
         fid: user.fid,
         username: user.username,
@@ -295,9 +318,16 @@ const WordGame: React.FC = () => {
           </div>
 
           <div className="action-buttons">
-            <button onClick={() => setShowLeaderboard(true)} className="leaderboard-button">
+            <button onClick={() => {
+              console.log('Leaderboard button clicked');
+              console.log('Current leaderboard:', leaderboard);
+              setShowLeaderboard(true);
+            }} className="leaderboard-button">
               <Trophy size={20} />
               Leaderboard
+            </button>
+            <button onClick={addTestData} className="test-button" style={{ backgroundColor: '#666', marginLeft: '10px' }}>
+              Add Test Data
             </button>
             <button onClick={shareScore} className="share-button">
               <Share2 size={20} />
@@ -344,8 +374,32 @@ const WordGame: React.FC = () => {
       )}
 
       <div className="game-header">
-        <h1>what the gger</h1>
-        <p>Word {currentWordIndex + 1} of 13</p>
+        <div className="header-content">
+          <div className="title-section">
+            <h1>what the gger</h1>
+            <p>Word {currentWordIndex + 1} of 13</p>
+          </div>
+          <div className="header-buttons">
+            <button 
+              onClick={addTestData} 
+              className="header-test-button"
+              title="Add Test Data"
+            >
+              +
+            </button>
+            <button 
+              onClick={() => {
+                console.log('Header leaderboard button clicked');
+                console.log('Current leaderboard:', leaderboard);
+                setShowLeaderboard(true);
+              }} 
+              className="header-leaderboard-button"
+              title="View Leaderboard"
+            >
+              <Trophy size={24} />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="game-content">

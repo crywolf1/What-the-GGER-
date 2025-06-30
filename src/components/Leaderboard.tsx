@@ -10,6 +10,8 @@ interface LeaderboardProps {
 }
 
 const Leaderboard: React.FC<LeaderboardProps> = ({ leaderboard, currentUserFid, onClose }) => {
+  console.log('Leaderboard component rendered with:', { leaderboard, currentUserFid });
+  
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:

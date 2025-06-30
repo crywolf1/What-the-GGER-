@@ -26,6 +26,7 @@ export const useLeaderboard = () => {
 
   // Add or update a score
   const addScore = useCallback((entry: Omit<LeaderboardEntry, 'percentage' | 'timestamp'>) => {
+    console.log('Adding score to leaderboard:', entry);
     setIsLoading(true);
     
     const percentage = Math.round((entry.score / entry.totalWords) * 100);
