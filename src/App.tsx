@@ -83,13 +83,42 @@ function App() {
         </div>
       )}
       
-      {error && (
+      {error && isFrameContext && (
         <div className="error-message">
           <p>⚠️ {error}</p>
         </div>
       )}
       
-      <WordGame />
+      {/* Only show the game if we're in Farcaster context */}
+      {isFrameContext ? (
+        <WordGame />
+      ) : (
+        <div className="browser-only-message">
+          <div className="farcaster-cta">
+            <h2>🚀 Open in Farcaster to Play!</h2>
+            <p>This word guessing game is designed for Farcaster (Warpcast).</p>
+            <div className="instructions-list">
+              <div className="instruction-item">
+                <span className="step-number">1</span>
+                <span>Copy this URL: <code>https://what-the-gger.vercel.app</code></span>
+              </div>
+              <div className="instruction-item">
+                <span className="step-number">2</span>
+                <span>Open Farcaster (Warpcast) app or website</span>
+              </div>
+              <div className="instruction-item">
+                <span className="step-number">3</span>
+                <span>Paste the URL in a cast or DM to yourself</span>
+              </div>
+              <div className="instruction-item">
+                <span className="step-number">4</span>
+                <span>Tap the link to open the game in Farcaster!</span>
+              </div>
+            </div>
+            <p className="benefit-text">🎯 Connect your wallet, save scores, and compete on the global leaderboard!</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

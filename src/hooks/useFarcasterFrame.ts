@@ -98,7 +98,7 @@ export const useFarcasterFrame = (): FarcasterContext => {
           // Not in a frame context
           console.log('Running outside Farcaster frame');
           setIsReady(true);
-          setError('For the best experience and wallet connection, please open this app in Farcaster (Warpcast)');
+          // Don't set error here - let App.tsx handle the UI messaging
         }
       } catch (err) {
         console.warn('Farcaster Frame SDK error:', err);
