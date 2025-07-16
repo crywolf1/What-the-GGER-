@@ -1,119 +1,109 @@
-# Wallet Connection & Farcaster Integration
+# Farcaster Wallet Integration
 
 ## Overview
 
-The app now supports wallet connection as a fallback when not running in a Farcaster Frame environment. This allows users to connect their wallets and potentially link to their Farcaster profiles.
+The app now supports Farcaster's built-in wallet integration, allowing users to connect their wallets directly through the Farcaster frame when using apps like Warpcast. This provides a seamless Web3 experience within the Farcaster ecosystem.
 
 ## How It Works
 
 ### 1. **Farcaster Frame Context (Primary)**
 - When running in Farcaster (Warpcast, etc.), user data comes directly from the frame context
 - Includes: `fid`, `username`, `displayName`, `pfpUrl`
+- Users can optionally connect their wallet for additional functionality
 
-### 2. **Wallet Connection (Fallback)**
-- When NOT in Farcaster context, users can connect their wallet
-- App attempts to look up Farcaster profile associated with the wallet address
-- Fallback to generic wallet user if no Farcaster profile found
+### 2. **Outside Farcaster (Information Mode)**
+- When NOT in Farcaster context, shows educational content about using the app in Farcaster
+- App still works for gameplay but scores won't be saved to leaderboard
+- Encourages users to open the app in Farcaster for the full experience
 
 ## Implementation
 
 ### Files Modified:
-- `src/hooks/useFarcasterFrame.ts` - Added wallet connection logic
-- `src/App.tsx` - Added wallet connect UI
-- `src/App.css` - Added wallet connection styles
-- `api/farcaster-profile.js` - API to lookup Farcaster profiles by wallet
+- `src/hooks/useFarcasterFrame.ts` - Added Farcaster SDK wallet connection
+- `src/App.tsx` - Added Farcaster-first UI with wallet integration
+- `src/App.css` - Added beautiful gradients and mobile-responsive styles
 
 ### Key Features:
-- **Automatic Detection**: Detects if running in Farcaster frame
-- **Wallet Connect**: MetaMask/compatible wallet connection
-- **Profile Lookup**: Attempts to find Farcaster profile for wallet
-- **Fallback Profile**: Creates generic profile if no Farcaster account found
-- **Disconnect Option**: Users can disconnect their wallet
+- **Farcaster-First**: Designed primarily for Farcaster frame usage
+- **SDK Wallet Integration**: Uses `sdk.wallet.ethProvider.request()` for wallet connection
+- **Profile + Wallet**: Shows both Farcaster profile AND connected wallet address
+- **Graceful Fallback**: Works outside Farcaster but encourages proper usage
+- **Educational UI**: Teaches users how to get the best experience
 
-## Integration with Real Farcaster APIs
+## Farcaster SDK Wallet Integration
 
-To use real Farcaster profile lookup (currently using mock data), integrate with:
-
-### 1. **Neynar API** (Recommended)
-```javascript
-// In api/farcaster-profile.js
-const neynarResponse = await fetch(
-  `https://api.neynar.com/v2/farcaster/user/bulk-by-address?addresses=${walletAddress}`,
-  {
-    headers: {
-      'api_key': process.env.NEYNAR_API_KEY
-    }
-  }
-);
+### Wallet Connection
+```typescript
+// Connect wallet through Farcaster SDK
+const walletAddresses = await sdk.wallet.ethProvider.request({
+  method: "eth_requestAccounts",
+});
 ```
 
-### 2. **Airstack API**
-```javascript
-// GraphQL query to Airstack
-const query = `
-  query GetFarcasterUserByAddress($address: Address!) {
-    Socials(
-      input: {
-        filter: {
-          dappName: {_eq: farcaster}
-          userAssociatedAddresses: {_eq: $address}
-        }
-        blockchain: ethereum
-      }
-    ) {
-      Social {
-        userId
-        profileName
-        profileDisplayName
-        profileImage
-      }
-    }
-  }
-`;
-```
-
-### 3. **Environment Variables Needed**
-Add to Vercel environment variables:
-- `NEYNAR_API_KEY` - Your Neynar API key
-- `AIRSTACK_API_KEY` - Your Airstack API key
+### Benefits of Farcaster Wallet Integration:
+1. **No External APIs**: No need for Neynar or other paid services
+2. **Native Integration**: Works seamlessly within Farcaster apps
+3. **User Trust**: Users stay within their trusted Farcaster environment
+4. **Better UX**: No popup windows or external wallet connections
 
 ## User Experience
 
 ### In Farcaster Frame:
 1. User opens app in Warpcast/Farcaster client
 2. Profile automatically loaded from frame context
-3. Can play game and submit scores immediately
+3. Optional: Click "Connect Wallet" to link wallet address
+4. Can play game and submit scores with both Farcaster identity and wallet
 
 ### Outside Farcaster:
 1. User opens app in regular browser
-2. Sees "Connect Wallet" button
-3. Connects MetaMask or compatible wallet
-4. App looks up Farcaster profile for wallet address
-5. If found: Shows Farcaster profile data
-6. If not found: Creates generic wallet user profile
-7. Can play game and submit scores
+2. Sees beautiful educational screen about Farcaster
+3. Can still play the game for fun
+4. Scores won't be saved (encourages using Farcaster)
+5. Clear instructions on how to get the full experience
+
+## Technical Details
+
+### Wallet Data Storage:
+- Farcaster profile: `fid`, `username`, `displayName`, `pfpUrl`
+- Wallet connection: `walletAddress`, `connectedViaWallet` flag
+- Combined in single user object for easy access
+
+### UI States:
+1. **Loading**: While Farcaster SDK initializes
+2. **Farcaster + No Wallet**: Shows profile + connect wallet button
+3. **Farcaster + Wallet**: Shows profile + wallet address + disconnect option
+4. **Outside Farcaster**: Educational content encouraging Farcaster usage
+
+## Deployment
+
+### Environment Variables:
+None required! The Farcaster SDK handles everything.
+
+### API Endpoints:
+- Removed `api/farcaster-profile.js` (no longer needed)
+- Existing leaderboard APIs work with both profile types
 
 ## Benefits
 
-1. **Broader Reach**: Works outside Farcaster ecosystem
-2. **Web3 Integration**: Connects to user's wallet identity
-3. **Profile Linking**: Links wallet addresses to Farcaster identities
-4. **Fallback Experience**: Still works even without Farcaster profile
-5. **Score Persistence**: Scores saved regardless of connection method
+1. **Free**: No paid API services required
+2. **Native**: Seamless Farcaster integration
+3. **Secure**: Uses Farcaster's trusted wallet connection
+4. **Educational**: Teaches users about Farcaster benefits
+5. **Flexible**: Works with or without wallet connection
+6. **Mobile-First**: Beautiful responsive design
 
 ## Testing
 
 ### Test in Farcaster:
-- Share app URL in Warpcast
-- Should load with Farcaster profile automatically
+1. Share app URL in Warpcast cast
+2. Should load with Farcaster profile
+3. Click "Connect Wallet" to test wallet integration
+4. Verify wallet address appears in profile
 
-### Test with Wallet:
-- Open app in regular browser
-- Click "Connect Wallet"
-- Should prompt for MetaMask connection
-- Profile should load (mock data for now)
+### Test Outside Farcaster:
+1. Open app in regular browser
+2. Should see educational Farcaster prompt
+3. Can still play game but no score saving
+4. UI should encourage Farcaster usage
 
-### Test without Connection:
-- App should still work for playing
-- Scores won't be saved to leaderboard
-- Can still see global leaderboard
+This approach provides the best possible experience while staying within the free Farcaster ecosystem! 🚀

@@ -11,9 +11,6 @@
     },
     "api/user.js": {
       "runtime": "nodejs18.x"
-    },
-    "api/farcaster-profile.js": {
-      "runtime": "nodejs18.x"
     }
   }
 }

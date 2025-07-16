@@ -28,7 +28,7 @@ function App() {
         splashBackgroundColor="#F2B149"
       />
       
-      {/* Show user info or wallet connect option */}
+      {/* Show user info or Farcaster prompt */}
       {user ? (
         <div className="farcaster-user-info">
           {user.pfpUrl && (
@@ -44,29 +44,42 @@ function App() {
           )}
           <div className="user-details">
             <p>Welcome, {user.displayName || user.username}!</p>
-            {user.fid > 0 ? (
-              <span className="user-fid">FID: {user.fid}</span>
-            ) : (
-              <span className="user-wallet">Connected via Wallet</span>
+            <span className="user-fid">FID: {user.fid}</span>
+            {user.walletAddress && (
+              <span className="user-wallet">
+                Wallet: {user.walletAddress.slice(0, 6)}...{user.walletAddress.slice(-4)}
+              </span>
+            )}
+            {isFrameContext && !user.walletAddress && (
+              <button 
+                onClick={connectWallet} 
+                disabled={isConnectingWallet}
+                className="wallet-connect-btn-small"
+              >
+                {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
+              </button>
             )}
             {user.connectedViaWallet && (
               <button onClick={disconnectWallet} className="disconnect-btn">
-                Disconnect
+                Disconnect Wallet
               </button>
             )}
           </div>
         </div>
-      ) : !isFrameContext && (
-        <div className="wallet-connect-section">
-          <h3>Connect Your Wallet</h3>
-          <p>Connect your wallet to play and save your scores!</p>
-          <button 
-            onClick={connectWallet} 
-            disabled={isConnectingWallet}
-            className="wallet-connect-btn"
-          >
-            {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
-          </button>
+      ) : (
+        <div className="farcaster-prompt-section">
+          <h3>🎯 Welcome to "What the gger"</h3>
+          <p>For the best experience and to save your scores to the global leaderboard:</p>
+          <div className="farcaster-instructions">
+            <p>📱 <strong>Open this app in Farcaster (Warpcast)</strong></p>
+            <p>🔗 Share this link in a Farcaster cast or DM</p>
+            <p>🎮 Connect your wallet and compete on the leaderboard!</p>
+          </div>
+          {!isFrameContext && (
+            <div className="outside-farcaster-notice">
+              <p>You're currently viewing outside Farcaster. You can still play, but scores won't be saved.</p>
+            </div>
+          )}
         </div>
       )}
       
