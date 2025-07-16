@@ -75,30 +75,32 @@ html, body {
 /* Farcaster User Info */
 .farcaster-user-info {
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 8px;
+  right: 10px;
   background: rgba(255, 255, 255, 0.15);
-  padding: 12px;
-  border-radius: 12px;
+  padding: 6px 8px;
+  border-radius: 8px;
   backdrop-filter: blur(10px);
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 200px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .user-avatar:hover {
@@ -110,17 +112,21 @@ html, body {
 .user-details {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  overflow: hidden;
 }
 
 .farcaster-user-info p {
   margin: 0;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-fid {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   opacity: 0.8;
   font-weight: normal;
 }
@@ -146,23 +152,24 @@ html, body {
 /* Mobile responsive adjustments for user info */
 @media (max-width: 480px) {
   .farcaster-user-info {
-    top: 5px;
-    right: 5px;
-    padding: 8px;
-    gap: 8px;
+    top: 4px;
+    right: 4px;
+    padding: 4px 6px;
+    gap: 4px;
+    max-width: 150px;
   }
   
   .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 20px;
+    height: 20px;
   }
   
   .farcaster-user-info p {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
   
   .user-fid {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
   }
   
   /* Adjust user info on very small screens */
@@ -222,14 +229,15 @@ html, body {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 0.5rem;
+  margin-top: 2px;
   display: block;
+  white-space: nowrap;
 }
 
 .wallet-connect-btn-small:hover:not(:disabled) {
@@ -244,11 +252,13 @@ html, body {
 
 .user-wallet {
   color: #28a745;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 500;
   display: block;
-  margin-top: 0.25rem;
-  font-family: monospace;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Enhanced user info styles */
@@ -284,12 +294,13 @@ html, body {
   background: rgba(220, 53, 69, 0.8);
   border: none;
   color: white;
-  padding: 6px 12px;
+  padding: 2px 6px;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.65rem;
   cursor: pointer;
-  margin-top: 0.5rem;
+  margin-top: 2px;
   transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .disconnect-btn:hover {
@@ -368,12 +379,26 @@ html, body {
 
 .instruction-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.instruction-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.instruction-item span {
+  flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .instruction-item:last-child {
@@ -384,14 +409,17 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: #F2B149;
-  color: #2c3e50;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border-radius: 50%;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 0.9rem;
   flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin-top: 2px;
 }
 
 .instruction-item code {
@@ -399,7 +427,12 @@ html, body {
   padding: 2px 6px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 1.3;
 }
 
 .benefit-text {
@@ -428,6 +461,19 @@ html, body {
     flex-direction: column;
     text-align: center;
     gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .instruction-item span {
+    text-align: center;
+    word-break: break-word;
+  }
+  
+  .instruction-item code {
+    font-size: 0.75rem;
+    word-break: break-all;
+    text-align: center;
+    padding: 4px 8px;
   }
   
   .step-number {
