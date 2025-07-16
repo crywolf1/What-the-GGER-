@@ -48,7 +48,7 @@ function App() {
             />
           )}
           <div className="user-details">
-            <p>Welcome, {user.displayName || user.username}!</p>
+            <p>{user.displayName || user.username}</p>
             <span className="user-fid">FID: {user.fid}</span>
           </div>
         </div>
