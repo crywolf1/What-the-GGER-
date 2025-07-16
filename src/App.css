@@ -77,18 +77,52 @@ html, body {
   position: absolute;
   top: 10px;
   right: 15px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 12px;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 12px;
+  border-radius: 12px;
   backdrop-filter: blur(10px);
   color: white;
   font-size: 0.9rem;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.user-avatar:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .farcaster-user-info p {
   margin: 0;
   font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.user-fid {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: normal;
 }
 
 /* Error Message */
@@ -107,4 +141,39 @@ html, body {
 
 .error-message p {
   margin: 0;
+}
+
+/* Mobile responsive adjustments for user info */
+@media (max-width: 480px) {
+  .farcaster-user-info {
+    top: 5px;
+    right: 5px;
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .farcaster-user-info p {
+    font-size: 0.8rem;
+  }
+  
+  .user-fid {
+    font-size: 0.7rem;
+  }
+  
+  /* Adjust user info on very small screens */
+  @media (max-width: 360px) {
+    .user-details {
+      display: none; /* Hide text on very small screens, just show avatar */
+    }
+    
+    .farcaster-user-info {
+      padding: 6px;
+      width: auto;
+    }
+  }
 }

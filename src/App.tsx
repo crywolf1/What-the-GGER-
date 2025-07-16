@@ -31,7 +31,21 @@ function App() {
       {/* Optional: Show user info if running in Farcaster */}
       {isFrameContext && user && (
         <div className="farcaster-user-info">
-          <p>Welcome, {user.displayName || user.username}!</p>
+          {user.pfpUrl && (
+            <img 
+              src={user.pfpUrl} 
+              alt={`${user.displayName || user.username}'s profile`}
+              className="user-avatar"
+              onError={(e) => {
+                // Hide image if it fails to load
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+          <div className="user-details">
+            <p>Welcome, {user.displayName || user.username}!</p>
+            <span className="user-fid">FID: {user.fid}</span>
+          </div>
         </div>
       )}
       
