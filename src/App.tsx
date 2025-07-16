@@ -4,7 +4,7 @@ import { useFarcasterFrame } from './hooks/useFarcasterFrame'
 import './App.css'
 
 function App() {
-  const { isReady, isFrameContext, user, error } = useFarcasterFrame();
+  const { isReady, isFrameContext, user, error, connectWallet, disconnectWallet, isConnectingWallet } = useFarcasterFrame();
 
   // Show loading state until Farcaster Frame is ready
   if (!isReady) {
@@ -28,8 +28,8 @@ function App() {
         splashBackgroundColor="#F2B149"
       />
       
-      {/* Optional: Show user info if running in Farcaster */}
-      {isFrameContext && user && (
+      {/* Show user info or wallet connect option */}
+      {user ? (
         <div className="farcaster-user-info">
           {user.pfpUrl && (
             <img 
@@ -44,8 +44,29 @@ function App() {
           )}
           <div className="user-details">
             <p>Welcome, {user.displayName || user.username}!</p>
-            <span className="user-fid">FID: {user.fid}</span>
+            {user.fid > 0 ? (
+              <span className="user-fid">FID: {user.fid}</span>
+            ) : (
+              <span className="user-wallet">Connected via Wallet</span>
+            )}
+            {user.connectedViaWallet && (
+              <button onClick={disconnectWallet} className="disconnect-btn">
+                Disconnect
+              </button>
+            )}
           </div>
+        </div>
+      ) : !isFrameContext && (
+        <div className="wallet-connect-section">
+          <h3>Connect Your Wallet</h3>
+          <p>Connect your wallet to play and save your scores!</p>
+          <button 
+            onClick={connectWallet} 
+            disabled={isConnectingWallet}
+            className="wallet-connect-btn"
+          >
+            {isConnectingWallet ? 'Connecting...' : 'Connect Wallet'}
+          </button>
         </div>
       )}
       
